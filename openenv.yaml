@@ -1,0 +1,70 @@
+spec_version: 1
+name: code-review-env
+version: "1.0.0"
+type: http
+description: >
+  A real-world OpenEnv environment where AI agents review Python code,
+  identify bugs, and submit secure fixes. Tasks range from a simple
+  ZeroDivisionError (easy) to SQL injection + timing attacks (hard).
+  Graders use AST-level verification for deterministic, reproducible scoring.
+
+author: "your-name"
+space_id: "YOUR_USERNAME/code-review-env"
+
+runtime:
+  port: 7860
+  app: server.app:app
+
+tags:
+  - openenv
+  - code-review
+  - security
+  - reinforcement-learning
+
+tasks:
+  - id: task_easy
+    difficulty: easy
+    max_steps: 10
+    reward_range: [0.0, 1.0]
+    description: "Find and fix a ZeroDivisionError when an empty list is passed"
+
+  - id: task_medium
+    difficulty: medium
+    max_steps: 10
+    reward_range: [0.0, 1.0]
+    description: "Find and fix 2 bugs in binary search (off-by-one + float division)"
+
+  - id: task_hard
+    difficulty: hard
+    max_steps: 10
+    reward_range: [0.0, 1.0]
+    description: "Find and fix 3 security bugs: SQL injection, timing attack, plaintext password"
+
+observation_space:
+  type: object
+  fields:
+    - {name: task_id,           type: string}
+    - {name: task_description,  type: string}
+    - {name: code_files,        type: array}
+    - {name: current_feedback,  type: array}
+    - {name: tests_passed,      type: integer}
+    - {name: tests_total,       type: integer}
+    - {name: step_count,        type: integer}
+    - {name: done,              type: boolean}
+
+action_space:
+  type: object
+  fields:
+    - {name: action_type,   type: string,  required: true,  enum: [comment, fix, submit]}
+    - {name: line_number,   type: integer, required: false}
+    - {name: comment_text,  type: string,  required: false}
+    - {name: filename,      type: string,  required: false}
+    - {name: fixed_content, type: string,  required: false}
+    - {name: final_summary, type: string,  required: false}
+
+reward_range: [0.0, 1.0]
+reward_description: >
+  Partial rewards at every step: comment+line_number (+0.08), good comment text (+0.07),
+  fix submitted (+0.10), empty spam (-0.05). Final graded reward on submit covers
+  bug identification, correct fixes, syntax validity, and AST-verified security fixes.
+  Penalties for unfixed vulnerabilities: -0.30 for SQL injection still present.
