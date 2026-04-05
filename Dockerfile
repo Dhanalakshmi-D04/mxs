@@ -4,14 +4,11 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Copy pyproject.toml first for better layer caching
-COPY pyproject.toml .
-RUN pip install --no-cache-dir -e ".[server]"
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy entire project
 COPY . .
 
-# Set PYTHONPATH so both relative and absolute imports work
 ENV PYTHONPATH="/app:$PYTHONPATH"
 
 EXPOSE 7860
