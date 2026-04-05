@@ -6,6 +6,9 @@ Uses openenv.core.env_server.create_fastapi_app when openenv-core is installed.
 Falls back to manual FastAPI routes so the server still works during local dev.
 """
 
+import uvicorn
+
+
 try:
     from ..models import CodeReviewAction, CodeReviewObservation
     from ..server.code_review_environment import CodeReviewEnvironment
@@ -133,3 +136,9 @@ except ImportError:
                 for tid, t in TASKS.items()
             ]
         }
+    def main():
+        import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+
+if __name__ == "__main__":
+    main()
