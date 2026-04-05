@@ -93,8 +93,8 @@ via the HuggingFace router.
 |------|-----------|-------|
 | task_easy | Easy | 1.000 |
 | task_medium | Medium | 1.000 |
-| task_hard | Hard | 0.950 |
-| **Average** | | **0.983** |
+| task_hard | Hard | 0.700 |
+| **Average** | | **0.900** |
 
 ## Setup
 
