@@ -22,7 +22,6 @@ try:
         CodeReviewEnvironment,
         CodeReviewAction,
         CodeReviewObservation,
-        env_name="CodeReviewEnv",
     )
 
 except ImportError:
