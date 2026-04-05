@@ -86,12 +86,15 @@ code-review-env/
 
 ## Baseline scores
 
-| Task | Score |
-|------|-------|
-| `task_easy` | 0.85 |
-| `task_medium` | 0.62 |
-| `task_hard` | 0.41 |
-| **Average** | **0.63** |
+Scores produced by running `inference.py` with `Qwen/Qwen2.5-72B-Instruct`
+via the HuggingFace router.
+
+| Task | Difficulty | Score |
+|------|-----------|-------|
+| task_easy | Easy | 1.000 |
+| task_medium | Medium | 1.000 |
+| task_hard | Hard | 0.700 |
+| **Average** | | **0.900** |
 
 ## Setup
 
