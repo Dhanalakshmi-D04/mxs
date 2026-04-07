@@ -6,7 +6,7 @@ CodeReviewEnv baseline inference script.
 Mandatory stdout format (judges parse this exactly):
   [START] task=<task_id> env=<benchmark> model=<model_name>
   [STEP]  step=<n> action=<str> reward=<0.00> done=<true|false> error=<msg|null>
-  [END]   success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...>
+  [END]   success=<true|false> steps=<n> rewards=<r1,r2,...>
 
 Required env variables:
   HF_TOKEN       Your Hugging Face / API key
@@ -42,7 +42,7 @@ SUCCESS_THRESHOLD = 0.5
 
 # ── 18-min hard timeout (2-min buffer under the 20-min limit) ─────────────────
 def _on_timeout(signum, frame):
-    print("\n[END] success=false steps=0 score=0.000 rewards=", flush=True)
+    print("\n[END] success=false steps=0 rewards=", flush=True)
     sys.exit(1)
 
 if hasattr(signal, "SIGALRM"):
@@ -68,12 +68,10 @@ def log_step(step: int, action: str, reward: float,
     )
 
 
-def log_end(success: bool, steps: int, score: float,
-            rewards: List[float]) -> None:
+def log_end(success: bool, steps: int, rewards: List[float]) -> None:
     r_str = ",".join(f"{r:.2f}" for r in rewards)
     print(
-        f"[END] success={str(success).lower()} steps={steps} "
-        f"score={score:.3f} rewards={r_str}",
+        f"[END] success={str(success).lower()} steps={steps} rewards={r_str}",
         flush=True,
     )
 
@@ -95,7 +93,7 @@ SYSTEM_PROMPT = textwrap.dedent("""
     3. End the episode:
        {"action_type": "submit", "final_summary": "<summary of all bugs found and fixed>"}
 
-    Order: comment (one per bug) → fix → submit.
+    Order: comment (one per bug) -> fix -> submit.
 
     Security rules (for auth tasks):
       - SQL: use cursor.execute(query, (param,)) with a '?' placeholder — never f-strings.
@@ -129,7 +127,7 @@ def _user_prompt(task_desc: str, code_files: list, feedback: list, step: int) ->
 # ── Model call ─────────────────────────────────────────────────────────────────
 
 def call_model(client: OpenAI, task_desc: str, code_files: list,
-               feedback: list, step: int) -> tuple[dict, Optional[str]]:
+               feedback: list, step: int) -> tuple:
     """Returns (action_dict, error_or_None)."""
     try:
         resp = client.chat.completions.create(
@@ -210,7 +208,7 @@ def run_task(task_id: str, client: OpenAI) -> float:
         success = False
 
     finally:
-        log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
+        log_end(success=success, steps=steps_taken, rewards=rewards)
 
     return score
 
@@ -224,9 +222,9 @@ async def main() -> None:
 
     client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
 
-    task_env   = os.getenv("TASK_NAME", "all")
-    tasks      = ALL_TASKS if task_env == "all" else [task_env]
-    results    = {}
+    task_env = os.getenv("TASK_NAME", "all")
+    tasks    = ALL_TASKS if task_env == "all" else [task_env]
+    results  = {}
 
     for task_id in tasks:
         results[task_id] = run_task(task_id, client)
@@ -236,9 +234,9 @@ async def main() -> None:
         signal.alarm(0)
 
     # Summary to stderr — does not pollute the required stdout format
-    print("\n── summary ──────────────────────", file=sys.stderr)
+    print("\n-- summary --", file=sys.stderr)
     for tid, s in results.items():
-        bar = "█" * int(s * 20)
+        bar = "#" * int(s * 20)
         print(f"  {tid:<15} {s:.3f}  {bar}", file=sys.stderr)
     if results:
         avg = sum(results.values()) / len(results)
