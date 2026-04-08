@@ -69,7 +69,7 @@ def grade_easy(actions: List[CodeReviewAction], final_code: str) -> dict:
     comments = [a for a in actions if a.action_type == "comment"]
     all_text = _all_comments(actions)
 
-    s["commented"]     = 0.15 if comments else 0.0
+    s["commented"]     = 0.14 if comments else 0.05
     s["correct_line"]  = 0.20 if any(a.line_number in [5, 6] for a in comments) else 0.0
     s["good_comment"]  = 0.20 if any(k in all_text for k in ["empty", "zero", "division", "len"]) else 0.0
 
