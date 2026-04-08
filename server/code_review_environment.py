@@ -11,7 +11,7 @@ except ImportError:
     State = None
 
 try:
-    from ..models import CodeReviewAction, CodeReviewObservation, CodeFile, RewardInfo
+    from models import CodeReviewAction, CodeReviewObservation, CodeFile, RewardInfo
     from ..server.tasks import TASKS
     from ..server.grader import GRADERS
 except ImportError:

@@ -10,8 +10,8 @@ import uvicorn
 
 
 try:
-    from ..models import CodeReviewAction, CodeReviewObservation
-    from ..server.code_review_environment import CodeReviewEnvironment
+    from models import CodeReviewAction, CodeReviewObservation
+    from . .server.code_review_environment import CodeReviewEnvironment
 except ImportError:
     from models import CodeReviewAction, CodeReviewObservation
     from server.code_review_environment import CodeReviewEnvironment

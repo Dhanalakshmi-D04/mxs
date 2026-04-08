@@ -97,3 +97,8 @@ def grade_hard(actions: List[CodeReviewAction], final_code: str) -> dict:
             "fix_present": fix_present,
         }
     }
+GRADERS = {
+    "task_easy": grade_easy,
+    "task_medium": grade_medium,
+    "task_hard": grade_hard,
+}
