@@ -204,10 +204,12 @@ def run_task(task_id: str, client: OpenAI) -> float:
 
     except Exception as exc:
         print(f"[DEBUG] episode error: {exc}", flush=True)
-        score   = rewards[-1] if rewards else 0.0
+        score   = rewards[-1] if rewards else 0.05
         success = False
 
     finally:
+        if not (0.0 < score < 1.0):
+            score = 0.05
         log_end(success=success, steps=steps_taken, rewards=rewards)
 
     return score

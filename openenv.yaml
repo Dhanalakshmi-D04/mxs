@@ -8,8 +8,8 @@ description: >
   ZeroDivisionError (easy) to SQL injection + timing attacks (hard).
   Graders use AST-level verification for deterministic, reproducible scoring.
 
-author: "your-name"
-space_id: "YOUR_USERNAME/code-review-env"
+author: "Dhanalakshmi4"
+space_id: "Dhanalakshmi4/code-review-env"
 
 runtime:
   port: 7860
@@ -25,19 +25,19 @@ tasks:
   - id: task_easy
     difficulty: easy
     max_steps: 10
-    reward_range: [0.0, 1.0]
+    reward_range: [0.01, 0.99]
     description: "Find and fix a ZeroDivisionError when an empty list is passed"
 
   - id: task_medium
     difficulty: medium
     max_steps: 10
-    reward_range: [0.0, 1.0]
+    reward_range: [0.01, 0.99]
     description: "Find and fix 2 bugs in binary search (off-by-one + float division)"
 
   - id: task_hard
     difficulty: hard
     max_steps: 10
-    reward_range: [0.0, 1.0]
+    reward_range: [0.01, 0.99]
     description: "Find and fix 3 security bugs: SQL injection, timing attack, plaintext password"
 
 observation_space:
@@ -62,7 +62,7 @@ action_space:
     - {name: fixed_content, type: string,  required: false}
     - {name: final_summary, type: string,  required: false}
 
-reward_range: [0.0, 1.0]
+reward_range: [0.01, 0.99]
 reward_description: >
   Partial rewards at every step: comment+line_number (+0.08), good comment text (+0.07),
   fix submitted (+0.10), empty spam (-0.05). Final graded reward on submit covers
