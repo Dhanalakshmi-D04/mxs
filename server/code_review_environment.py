@@ -154,7 +154,7 @@ class CodeReviewEnvironment(Environment):
             prev_types = [a.action_type for a in self._actions[:-1]]
             if prev_types and prev_types[-1] == "fix":
                 p -= 0.03
-        return round(max(0.0, p), 4)
+        return round(max(0.05, p), 4)
 
     def _make_obs(self) -> CodeReviewObservation:
         feedback = []
