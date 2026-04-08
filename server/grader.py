@@ -84,7 +84,7 @@ def grade_easy(actions: List[CodeReviewAction], final_code: str) -> dict:
         s["valid_syntax"] = 0.0
         s["fix_present"]  = 0.0   # broken syntax voids fix score
 
-    return {"total": round(min(1.0, sum(s.values())), 4), "breakdown": s}
+    return {"total": round(min(0.95, max(0.05, sum(s.values()))), 4), "breakdown": s}
 
 
 def grade_medium(actions: List[CodeReviewAction], final_code: str) -> dict:
@@ -115,7 +115,7 @@ def grade_medium(actions: List[CodeReviewAction], final_code: str) -> dict:
 
     s["both_bonus"] = 0.25 if (fix1 and fix2) else 0.0
 
-    return {"total": round(min(1.0, sum(s.values())), 4), "breakdown": s}
+    return {"total": round(min(0.95, max(0.05, sum(s.values()))), 4), "breakdown": s}
 
 
 def grade_hard(actions: List[CodeReviewAction], final_code: str) -> dict:
@@ -155,7 +155,7 @@ def grade_hard(actions: List[CodeReviewAction], final_code: str) -> dict:
         "f'" in final_code and "username" in final_code and "select" in code
     ) else 0.0
 
-    return {"total": round(max(0.0, min(1.0, sum(s.values()))), 4), "breakdown": s}
+    return {"total": round(max(0.05, min(0.95, sum(s.values()))), 4), "breakdown": s}
 
 
 GRADERS = {

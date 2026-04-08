@@ -91,10 +91,10 @@ via the HuggingFace router.
 
 | Task | Difficulty | Score |
 |------|-----------|-------|
-| task_easy | Easy | 1.000 |
-| task_medium | Medium | 1.000 |
+| task_easy | Easy | 0.950 |
+| task_medium | Medium | 0.950 |
 | task_hard | Hard | 0.700 |
-| **Average** | | **0.900** |
+| **Average** | | **0.867** |
 
 ## Setup
 
