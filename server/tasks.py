@@ -140,6 +140,8 @@ def authenticate_user(username, password, db_path="users.db"):
                 "description": "passwords compared in plaintext, use hashing",
             },
         ],
-        "tests": [],
+        "tests": [
+            {"input": "auth.py", "expected": "parsed"}
+        ],
     },
 }

@@ -56,7 +56,7 @@ class CodeReviewEnvironment(Environment):
         ]
         self._step_count = 0
         self._done = False
-        self._cumulative_reward = 0.0
+        self._cumulative_reward = 0.01  # Start above 0.0 to avoid "out of range" at reset
         return self._make_obs()
 
     def step(self, action: CodeReviewAction) -> CodeReviewObservation:
@@ -90,11 +90,16 @@ class CodeReviewEnvironment(Environment):
             self._done = True
             final_code = self._current_files[0].content if self._current_files else ""
             result = GRADERS[self.task_id](self._actions, final_code)
-            reward_val = float(result["total"])
+            
+            # Ensure final cumulative reward is strictly between 0 and 1.
+            # We target result["total"] but ensure every step reward is > 0.0 for Pydantic.
+            target_total = float(result["total"])
+            reward_val = round(max(0.01, target_total - self._cumulative_reward), 4)
+
             self._last_reward_info = RewardInfo(
                 value=reward_val,
                 breakdown=result["breakdown"],
-                message=f"Final graded score: {reward_val:.4f}",
+                message=f"Final graded score: {reward_val:.4f} (Total: {self._cumulative_reward + reward_val:.4f})",
             )
         else:
             partial = self._partial_reward(action)
