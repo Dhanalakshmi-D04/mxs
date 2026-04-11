@@ -38,10 +38,10 @@ except ImportError:
     def root():
         return """
         <div style="font-family: sans-serif; padding: 40px; line-height: 1.6; max-width: 800px; margin: 0 auto;">
-          <h1 style="color: #2563eb;">CodeReviewEnv <span style="font-size: 0.5em; vertical-align: middle; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; color: #4b5563;">v1.0.4</span></h1>
-          <p style="font-size: 1.1em; color: #374151;">Environment is <strong>Live and Strictly Validated</strong>.</p>
+          <h1 style="color: #2563eb;">CodeReviewEnv <span style="font-size: 0.5em; vertical-align: middle; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; color: #4b5563;">v1.0.6</span></h1>
+          <p style="font-size: 1.1em; color: #374151;">Environment is <strong>Universal Standard Compatible</strong>.</p>
           <div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px; margin: 20px 0;">
-            <strong>Range Check:</strong> ALL scores (rewards + metrics) are now hard-clipped to [0.01, 0.99].
+            <strong>Standard Mode:</strong> Returning (obs, reward, done, info) 4-tuples for all validators.
           </div>
           <h3 style="margin-top: 30px;">Endpoints</h3>
           <ul style="list-style: none; padding: 0;">
@@ -94,19 +94,19 @@ except ImportError:
 
     def _do_step(env: CodeReviewEnvironment, action: CodeReviewAction):
         try:
-            obs = env.step(action)
-            reward = env._last_reward_info
-            env._cumulative_reward = float(
-                max(0.01, min(0.99, round(env._cumulative_reward + reward.value, 4)))
-            )
+            # Unpack the standard 4-tuple
+            obs, reward_val, done, info = env.step(action)
+            
             return {
-                "observation": obs.model_dump(),
-                "reward": reward.model_dump(),
-                "done": obs.done,
-                "info": {"step": obs.step_count},
+                "observation": obs.model_dump() if hasattr(obs, 'model_dump') else obs,
+                "reward": float(reward_val),
+                "done": bool(done),
+                "info": info,
             }
         except RuntimeError as e:
             return {"error": str(e)}
+        except Exception as e:
+            return {"error": f"Internal Error: {str(e)}"}
 
     # ── /state ─────────────────────────────────────────────────────────────────
 

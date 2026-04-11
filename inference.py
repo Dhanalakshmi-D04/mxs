@@ -6,7 +6,7 @@ CodeReviewEnv baseline inference script.
 Mandatory stdout format (judges parse this exactly):
   [START] task=<task_id> env=<benchmark> model=<model_name>
   [STEP]  step=<n> action=<str> reward=<0.00> done=<true|false> error=<msg|null>
-  [END]   success=<true|false> steps=<n> rewards=<r1,r2,...>
+  [END]   task=<task_id> score=<0.00> steps=<n>
 
 Required env variables:
   HF_TOKEN       Your Hugging Face / API key
@@ -33,7 +33,7 @@ from models import CodeReviewAction
 API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
-BENCHMARK    = "code-review-env"
+BENCHMARK    = "toggle"
 ALL_TASKS    = ["task_easy", "task_medium", "task_hard"]
 MAX_STEPS    = 8
 TEMPERATURE  = 0.2
@@ -42,7 +42,7 @@ SUCCESS_THRESHOLD = 0.5
 
 # ── 18-min hard timeout (2-min buffer under the 20-min limit) ─────────────────
 def _on_timeout(signum, frame):
-    print("\n[END] success=false steps=0 rewards=", flush=True)
+    print("\n[END] task=timeout score=0.01 steps=0", flush=True)
     sys.exit(1)
 
 if hasattr(signal, "SIGALRM"):
@@ -68,10 +68,10 @@ def log_step(step: int, action: str, reward: float,
     )
 
 
-def log_end(success: bool, steps: int, rewards: List[float]) -> None:
-    r_str = ",".join(f"{r:.2f}" for r in rewards)
+def log_end(task: str, score: float, steps: int) -> None:
+    final_score = max(0.01, min(0.99, float(score)))
     print(
-        f"[END] success={str(success).lower()} steps={steps} rewards={r_str}",
+        f"[END] task={task} score={final_score:.2f} steps={steps}",
         flush=True,
     )
 
@@ -208,9 +208,7 @@ def run_task(task_id: str, client: OpenAI) -> float:
         success = False
 
     finally:
-        if not (0.0 < score < 1.0):
-            score = 0.05
-        log_end(success=success, steps=steps_taken, rewards=rewards)
+        log_end(task=task_id, score=score, steps=steps_taken)
 
     return score
 
