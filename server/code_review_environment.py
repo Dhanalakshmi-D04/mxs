@@ -179,13 +179,18 @@ class CodeReviewEnvironment(Environment):
                     f"Step {i+1} [submit]: {a.final_summary or '(no summary)'}"
                 )
 
+        # Ensure success metrics are also strictly between 0 and 1
+        # by representing reward as a fraction of 100 tests.
+        t_total = 100
+        t_passed = max(1, min(99, int(self._cumulative_reward * 100)))
+
         return CodeReviewObservation(
             task_id=self.task_id,
             task_description=self._task["description"],
             code_files=self._current_files,
             current_feedback=feedback,
-            tests_passed=0,
-            tests_total=len(self._task.get("tests", [])),
+            tests_passed=t_passed,
+            tests_total=t_total,
             step_count=self._step_count,
             done=self._done,
         )

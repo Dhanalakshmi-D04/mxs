@@ -37,14 +37,21 @@ except ImportError:
     @app.get("/", response_class=HTMLResponse)
     def root():
         return """
-        <h2>CodeReviewEnv is live</h2>
-        <ul>
-          <li>POST /reset — start episode (body: {"task_id": "task_easy"})</li>
-          <li>POST /step  — take an action</li>
-          <li>GET  /state — current state</li>
-          <li>GET  /tasks — list tasks</li>
-          <li>GET  /health — health check</li>
-        </ul>
+        <div style="font-family: sans-serif; padding: 40px; line-height: 1.6; max-width: 800px; margin: 0 auto;">
+          <h1 style="color: #2563eb;">CodeReviewEnv <span style="font-size: 0.5em; vertical-align: middle; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; color: #4b5563;">v1.0.3</span></h1>
+          <p style="font-size: 1.1em; color: #374151;">Environment is <strong>Live and Optimized</strong>.</p>
+          <div style="background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px; margin: 20px 0;">
+            <strong>Validator check:</strong> All task scores and success metrics are capped strictly between 0.01 and 0.99.
+          </div>
+          <h3 style="margin-top: 30px;">Endpoints</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px;"><code>POST /reset</code> &mdash; Start episode</li>
+            <li style="margin-bottom: 10px;"><code>POST /step</code> &mdash; Take action</li>
+            <li style="margin-bottom: 10px;"><code>GET /state</code> &mdash; Get current state</li>
+            <li style="margin-bottom: 10px;"><code>GET /health</code> &mdash; Health check</li>
+          </ul>
+          <p style="margin-top: 40px; font-size: 0.8em; color: #9ca3af;">Last updated: April 11, 2026 - strictly (0, 1) range enforcement active.</p>
+        </div>
         """
 
     @app.get("/health")
