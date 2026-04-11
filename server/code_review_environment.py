@@ -133,28 +133,28 @@ class CodeReviewEnvironment(Environment):
     def _partial_reward(self, action: CodeReviewAction) -> float:
         """
         Mid-episode signal so the agent learns from every step, not just the end.
-          comment + line_number  → +0.08
-          comment + good text    → +0.07
-          fix with content       → +0.10
-          empty comment          → −0.05  (penalise spam)
-          repeated fix           → −0.03
+          comment + line_number  → +0.01
+          comment + good text    → +0.01
+          fix with content       → +0.02
+          empty comment          → −0.005 (penalise spam)
+          repeated fix           → −0.005
         """
         p = 0.0
         if action.action_type == "comment":
             if action.line_number is not None:
-                p += 0.08
+                p += 0.01
             if action.comment_text and len(action.comment_text.strip()) > 20:
-                p += 0.07
+                p += 0.01
             if not action.comment_text or len(action.comment_text.strip()) < 5:
-                p -= 0.05
+                p -= 0.005
         elif action.action_type == "fix":
             if action.fixed_content and len(action.fixed_content.strip()) > 50:
-                p += 0.10
+                p += 0.02
             # penalise re-fixing without commenting in between
             prev_types = [a.action_type for a in self._actions[:-1]]
             if prev_types and prev_types[-1] == "fix":
-                p -= 0.03
-        return round(max(0.05, p), 4)
+                p -= 0.005
+        return round(max(0.01, p), 4)
 
     def _make_obs(self) -> CodeReviewObservation:
         feedback = []

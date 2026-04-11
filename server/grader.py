@@ -27,16 +27,16 @@ def grade_easy(actions: List[CodeReviewAction], final_code: str) -> dict:
     comments = _get_comments(actions)
     comment = comments[0] if comments else None
 
-    # Fail=0.05, Pass=chosen so max sum = 0.89 (never hits 1.0)
-    commented   = 0.13 if comment else 0.05
-    correct_line = 0.18 if (comment and comment.line_number == 5) else 0.05
-    good_comment = 0.18 if (comment and comment.comment_text and
-                             len(comment.comment_text) > 10) else 0.05
-    valid_syntax = 0.13 if _valid_syntax(final_code) else 0.05
-    fix_present  = 0.27 if _has_fix(actions) else 0.05
+    # Fail=0.02, Pass values scaled to ensure max sum ~0.65
+    commented    = 0.09 if comment else 0.02
+    correct_line = 0.13 if (comment and comment.line_number == 5) else 0.02
+    good_comment = 0.13 if (comment and comment.comment_text and
+                             len(comment.comment_text) > 10) else 0.02
+    valid_syntax = 0.09 if _valid_syntax(final_code) else 0.02
+    fix_present  = 0.21 if _has_fix(actions) else 0.02
 
     total = commented + correct_line + good_comment + valid_syntax + fix_present
-    # Min = 0.05*5 = 0.25, Max = 0.13+0.18+0.18+0.13+0.27 = 0.89
+    # Min = 0.02*5 = 0.10, Max = 0.09+0.13+0.13+0.09+0.21 = 0.65
     return {
         "total": round(total, 4),
         "breakdown": {
@@ -53,15 +53,16 @@ def grade_medium(actions: List[CodeReviewAction], final_code: str) -> dict:
     comments = _get_comments(actions)
     comment = comments[0] if comments else None
 
-    commented    = 0.12 if comment else 0.05
-    correct_line = 0.17 if (comment and comment.line_number in [3, 4, 5]) else 0.05
-    good_comment = 0.17 if (comment and comment.comment_text and
-                              len(comment.comment_text) > 10) else 0.05
-    valid_syntax = 0.12 if _valid_syntax(final_code) else 0.05
-    fix_present  = 0.25 if _has_fix(actions) else 0.05
+    # Scaled down to ensure max sum ~0.60
+    commented    = 0.08 if comment else 0.02
+    correct_line = 0.12 if (comment and comment.line_number in [3, 4, 5]) else 0.02
+    good_comment = 0.12 if (comment and comment.comment_text and
+                              len(comment.comment_text) > 10) else 0.02
+    valid_syntax = 0.08 if _valid_syntax(final_code) else 0.02
+    fix_present  = 0.20 if _has_fix(actions) else 0.02
 
     total = commented + correct_line + good_comment + valid_syntax + fix_present
-    # Min = 0.25, Max = 0.83
+    # Min = 0.10, Max = 0.60
     return {
         "total": round(total, 4),
         "breakdown": {
@@ -78,15 +79,16 @@ def grade_hard(actions: List[CodeReviewAction], final_code: str) -> dict:
     comments = _get_comments(actions)
     comment = comments[0] if comments else None
 
-    commented    = 0.11 if comment else 0.05
-    correct_line = 0.16 if (comment and comment.line_number) else 0.05
-    good_comment = 0.16 if (comment and comment.comment_text and
-                              len(comment.comment_text) > 15) else 0.05
-    valid_syntax = 0.11 if _valid_syntax(final_code) else 0.05
-    fix_present  = 0.23 if _has_fix(actions) else 0.05
+    # Scaled down to ensure max sum ~0.55
+    commented    = 0.07 if comment else 0.02
+    correct_line = 0.11 if (comment and comment.line_number) else 0.02
+    good_comment = 0.11 if (comment and comment.comment_text and
+                              len(comment.comment_text) > 15) else 0.02
+    valid_syntax = 0.07 if _valid_syntax(final_code) else 0.02
+    fix_present  = 0.19 if _has_fix(actions) else 0.02
 
     total = commented + correct_line + good_comment + valid_syntax + fix_present
-    # Min = 0.25, Max = 0.77
+    # Min = 0.10, Max = 0.55
     return {
         "total": round(total, 4),
         "breakdown": {

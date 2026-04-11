@@ -82,3 +82,5 @@ class RewardInfo(BaseModel):
     value: float = Field(..., gt=0.0, lt=1.0)
     breakdown: Dict[str, Any]
     message: str
+
+    
